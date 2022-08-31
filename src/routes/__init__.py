@@ -5,10 +5,13 @@ main_router = APIRouter(prefix="/nodal", tags=["NodalAnalysis"])
 
 
 @main_router.post("/calc", response_model=NodalCalcResponse)
-async def my_profile(data: NodalCalcRequest):
+def my_profile(data: NodalCalcRequest):
     """
     Эндпоинт для выполнения Узлового Анализа
     """
-    # Функция для выполнения узлового анализа
+    parsed = data.dict()
     from src.calculations.nodal import calc_nodal
-    pass
+
+    result = calc_nodal(parsed.get('ipr'), parsed.get('vlp'))
+    # Функция для выполнения узлового анализа
+    return NodalCalcResponse.parse_obj(result)
